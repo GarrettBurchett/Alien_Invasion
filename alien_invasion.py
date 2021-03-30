@@ -40,8 +40,12 @@ class AlienInvasion:
         self.play_button = Button(self, "Play")
         # Make a How To Play button.
         self.how_to_play_button = Button(self, "How To Play")
+        self.how_to_play_button.rect.left = self.how_to_play_button.screen_rect.left
+        self.how_to_play_button.msg_image_rect.left = self.how_to_play_button.rect.left
         # Make a High Scores button.
         self.high_scores_button = Button(self, "High Scores")
+        self.high_scores_button.rect.right = self.high_scores_button.screen_rect.right
+        self.high_scores_button.msg_image_rect.right = self.high_scores_button.rect.right
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -74,6 +78,18 @@ class AlienInvasion:
         if button_clicked and not self.stats.game_active:
             self._start_game()
 
+    def _check_how_to_play_button(self, mouse_pos):
+        """Opens the How to Play screen detailing the game."""
+        button_clicked = self.how_to_play_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            pass
+
+    def _check_high_score_button(self, mouse_pos):
+        """Displays the top 10 High Score list."""
+        button_clicked = self.high_scores_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            pass
+
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
         if event.key == pygame.K_RIGHT:
@@ -101,9 +117,7 @@ class AlienInvasion:
         # Reset the game statistics.
         self.stats.reset_stats()
         self.stats.game_active = True
-        self.sb.prep_score()
-        self.sb.prep_level()
-        self.sb.prep_ships()
+        self.sb.prep_images()
 
         # Get rid of any remaining aliens and bullets.
         self.aliens.empty()
@@ -147,15 +161,17 @@ class AlienInvasion:
             self.sb.check_high_score()
 
         if not self.aliens:
-            # Destroy existing bullets and create new fleet.
-            self.bullets.empty()
-            self._create_fleet()
-            self.settings.increase_speed()
+            self._start_new_level()
 
-            # Increase level.
-            self.stats.level += 1
-            self.sb.prep_level()
+    def _start_new_level(self):
+        """Destorys existing bullets, creates a new fleet and increases the level."""
+        self.bullets.empty()
+        self._create_fleet()
+        self.settings.increase_speed()
 
+        self.stats.level += 1
+        self.sb.prep_level()
+    
     def _update_aliens(self):
         """
         Check if the fleet is at an edge,
