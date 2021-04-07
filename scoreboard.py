@@ -83,4 +83,9 @@ class Scoreboard:
         """Check to see if there's a new high score."""
         if self.stats.score > self.stats.high_score:
             self.stats.high_score = self.stats.score
+            try:
+                with open('high score.txt') as f:
+                    f.write(self.stats.high_score)
+            except FileNotFoundError:
+                pass
             self.prep_high_score()

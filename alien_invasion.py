@@ -40,13 +40,13 @@ class AlienInvasion:
         self.play_button = Button(self, "Play")
         # Make a How To Play button.
         self.how_to_play_button = Button(self, "How To Play")
-        self.how_to_play_button.rect.left = self.how_to_play_button.screen_rect.left
-        self.how_to_play_button.msg_image_rect.left = self.how_to_play_button.rect.left
+        self.how_to_play_button.rect.center = (self.settings.screen_width / 2, self.settings.screen_height / 3)
+        self.how_to_play_button.msg_image_rect.center = self.how_to_play_button.rect.center
         # Make a High Scores button.
         self.high_scores_button = Button(self, "High Scores")
-        self.high_scores_button.rect.right = self.high_scores_button.screen_rect.right
-        self.high_scores_button.msg_image_rect.right = self.high_scores_button.rect.right
-
+        self.high_scores_button.rect.center = (self.settings.screen_width / 2, self.settings.screen_height / 1.5)
+        self.high_scores_button.msg_image_rect.center = self.high_scores_button.rect.center 
+        
     def run_game(self):
         """Start the main loop for the game."""
         while True:
