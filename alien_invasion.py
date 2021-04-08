@@ -38,14 +38,21 @@ class AlienInvasion:
 
         # Make the Play button.
         self.play_button = Button(self, "Play")
+
         # Make a How To Play button.
         self.how_to_play_button = Button(self, "How To Play")
         self.how_to_play_button.rect.center = (self.settings.screen_width / 2, self.settings.screen_height / 3)
         self.how_to_play_button.msg_image_rect.center = self.how_to_play_button.rect.center
+
         # Make a High Scores button.
         self.high_scores_button = Button(self, "High Scores")
         self.high_scores_button.rect.center = (self.settings.screen_width / 2, self.settings.screen_height / 1.5)
-        self.high_scores_button.msg_image_rect.center = self.high_scores_button.rect.center 
+        self.high_scores_button.msg_image_rect.center = self.high_scores_button.rect.center
+
+        # Make a Back button for other menus.
+        self.back_button = Button(self, "<-- Back")
+        self.back_button.rect.topleft = (0, 0)
+        self.back_button.msg_image_rect.center = self.back_button.rect.center 
         
     def run_game(self):
         """Start the main loop for the game."""
@@ -71,6 +78,9 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
+                self._check_how_to_play_button(mouse_pos)
+                self._check_high_score_button(mouse_pos)
+                self._check_back_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
@@ -82,14 +92,38 @@ class AlienInvasion:
         """Opens the How to Play screen detailing the game."""
         button_clicked = self.how_to_play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
+            #on_how_to_play = True
+            #while on_how_to_play:
             pass
 
     def _check_high_score_button(self, mouse_pos):
         """Displays the top 10 High Score list."""
         button_clicked = self.high_scores_button.rect.collidepoint(mouse_pos)
+        high_score_text = f"HIGH SCORE:\n \n{self.stats.high_score}"
         if button_clicked and not self.stats.game_active:
-            pass
+            self.screen.fill((0, 0, 0))
+            msg_image = pygame.font.SysFont(None, 36).render(high_score_text, True, (255, 255, 255), (0, 0, 0))
+            msg_image_rect = msg_image.get_rect()
+            msg_image_rect.center = (self.settings.screen_width / 2, self.settings.screen_height / 2)
+            self.back_button.draw_button()
+            self.screen.blit(msg_image, msg_image_rect)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    self._check_keydown_events(event)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    self._check_back_button(mouse_pos)
+            
+            pygame.display.flip()
 
+    def _check_back_button(self, mouse_pos):
+        """Checks if the Back button was clicked."""
+        button_clicked = self.back_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            self._update_screen()
+    
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
         if event.key == pygame.K_RIGHT:
@@ -270,7 +304,7 @@ class AlienInvasion:
         # Draw the score information.
         self.sb.show_score()
 
-        # Draw the play button if the game is inactive.
+        # Draw the play, how to play, and high scores button if the game is inactive.
         if not self.stats.game_active:
             self.play_button.draw_button()
             self.how_to_play_button.draw_button()

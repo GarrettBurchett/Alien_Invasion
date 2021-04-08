@@ -16,7 +16,7 @@ class GameStats:
         except FileNotFoundError:
             self.high_score = 0
         else:
-            self.high_score = contents.rstrip()
+            self.high_score = int(contents.rstrip())
 
     def reset_stats(self):
         """Initialize statistics that can change during the game."""

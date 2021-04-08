@@ -44,6 +44,11 @@ class Scoreboard:
         """Turn the high score into a rendered image."""
         high_score = round(self.stats.high_score, -1)
         high_score_str = "{:,}".format(high_score)
+        try:
+            with open('high score.txt', 'w') as f:
+                f.write(high_score_str)
+        except FileNotFoundError:
+            pass
         self.high_score_image = self.font.render(high_score_str, True,
                                 self.text_color, self.settings.bg_color)
 
@@ -83,9 +88,4 @@ class Scoreboard:
         """Check to see if there's a new high score."""
         if self.stats.score > self.stats.high_score:
             self.stats.high_score = self.stats.score
-            try:
-                with open('high score.txt') as f:
-                    f.write(self.stats.high_score)
-            except FileNotFoundError:
-                pass
             self.prep_high_score()
