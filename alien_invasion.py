@@ -63,8 +63,9 @@ class AlienInvasion:
                 self.ship.update()
                 self._update_bullets()
                 self._update_aliens()
+                self._update_screen()
             
-            self._update_screen()
+            self._main_menu()
 
     def _check_events(self):
         """Respond to keypresses and mouse events."""
@@ -92,37 +93,19 @@ class AlienInvasion:
         """Opens the How to Play screen detailing the game."""
         button_clicked = self.how_to_play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
-            #on_how_to_play = True
-            #while on_how_to_play:
-            pass
+            self._how_to_play_screen()
 
     def _check_high_score_button(self, mouse_pos):
         """Displays the top 10 High Score list."""
         button_clicked = self.high_scores_button.rect.collidepoint(mouse_pos)
-        high_score_text = f"HIGH SCORE:\n \n{self.stats.high_score}"
         if button_clicked and not self.stats.game_active:
-            self.screen.fill((0, 0, 0))
-            msg_image = pygame.font.SysFont(None, 36).render(high_score_text, True, (255, 255, 255), (0, 0, 0))
-            msg_image_rect = msg_image.get_rect()
-            msg_image_rect.center = (self.settings.screen_width / 2, self.settings.screen_height / 2)
-            self.back_button.draw_button()
-            self.screen.blit(msg_image, msg_image_rect)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-                elif event.type == pygame.KEYDOWN:
-                    self._check_keydown_events(event)
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_pos = pygame.mouse.get_pos()
-                    self._check_back_button(mouse_pos)
-            
-            pygame.display.flip()
+            self._high_score_screen()
 
     def _check_back_button(self, mouse_pos):
         """Checks if the Back button was clicked."""
         button_clicked = self.back_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
-            self._update_screen()
+            self._main_menu()
     
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -304,13 +287,55 @@ class AlienInvasion:
         # Draw the score information.
         self.sb.show_score()
 
-        # Draw the play, how to play, and high scores button if the game is inactive.
+        pygame.display.flip()
+
+    def _main_menu(self):
+        """Set the main menu screen for an inactive game."""
         if not self.stats.game_active:
+            self.screen.fill(self.settings.bg_color)
             self.play_button.draw_button()
             self.how_to_play_button.draw_button()
             self.high_scores_button.draw_button()
+            pygame.display.update()
+    
+    def _high_score_screen(self):
+        if not self.stats.game_active:
+            high_score_text = f"HIGH SCORE: {self.stats.high_score}"
+            self.screen.fill((0, 0, 0))
+            msg_image = pygame.font.SysFont(None, 36).render(high_score_text, True, (255, 255, 255), (0, 0, 0))
+            msg_image_rect = msg_image.get_rect()
+            msg_image_rect.center = (self.settings.screen_width / 2, self.settings.screen_height / 2)
+            self.back_button.draw_button()
+            self.screen.blit(msg_image, msg_image_rect)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    self._check_keydown_events(event)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    self._check_back_button(mouse_pos)
+            
+            pygame.display.update()
 
-        pygame.display.flip()
+    def _how_to_play_screen(self):
+        if not self.stats.game_active:
+            self.screen.fill((0,0,0))
+            msg_image = pygame.font.SysFont(None, 36).render("It's Working!!!", True, (255, 255, 255), (0, 0, 0))
+            msg_image_rect = msg_image.get_rect()
+            msg_image_rect.center = (self.settings.screen_width / 2, self.settings.screen_height / 2)
+            self.back_button.draw_button()
+            self.screen.blit(msg_image, msg_image_rect)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    self._check_keydown_events(event)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    self._check_back_button(mouse_pos)
+                
+            pygame.display.flip()
 
 if __name__ == '__main__':
     # Make a game instance, and run the game.
